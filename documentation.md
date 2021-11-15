@@ -8,6 +8,7 @@ Once you are logged on "/auth/login/" route you get a --Access Token--, this sho
 
 ##### Glosary
 "?" = OPTIONAL
+
 "--auth" = Need "x-access-token"
 
 ## Users
