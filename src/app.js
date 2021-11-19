@@ -2,6 +2,7 @@ const express = require("express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
+const cors = require('cors')
 const ENV = require("./config/env");
 const InitMongo = require("./mongoose.initializer");
 const UsersRoutes = require("./routes/users.routes");
@@ -15,6 +16,7 @@ InitMongo();
 
 // Middlewares
 app.use(express.json());
+app.use(cors())
 app.use("/static", express.static("./Uploads"));
 
 // Routes

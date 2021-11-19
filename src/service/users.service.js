@@ -1,6 +1,5 @@
 const Users = require("../entities/users.entity");
 const hash = require("../utils/hash");
-const serialize = require("../serializer");
 
 module.exports = {
   findAll: async () => {
