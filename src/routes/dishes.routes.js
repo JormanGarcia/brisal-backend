@@ -4,6 +4,7 @@ const Joi = require("joi");
 const verifyToken = require("../middlewares/auth.middleware");
 const dishesService = require("../service/dishes.service ");
 const multer = require("multer")
+const cloudinary = require("cloudinary")
 const path = require("path")
 
 const storage = multer.diskStorage({
@@ -85,7 +86,10 @@ router.post("/", [verifyToken,upload.single("image")], async (req, res) => {
   }
 
   try {
-    await dishesService.createDish({...value, photos: [req.file.filename]});
+
+    const image = await cloudinary.v2.uploader.upload(req.file.path)
+
+    await dishesService.createDish({...value, photos: [image.url]});
     return res.send("Dish Created");
   } catch (e) {
     console.log(e);

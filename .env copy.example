@@ -1,0 +1,6 @@
+PORT=4000
+MONGO_URI=mongodb+srv://username:password@cluster0.wvgpo.mongodb.net/brisal?retryWrites=true&w=majority
+TOKEN_KEY=SuperSecret
+CLOUDINARY_NAME=some-cloud-name
+CLOUDINARY_API_KEY=184232566495741
+CLOUDINARY_SECRET=9iae2lhbRhRZ5YvFgTarqAfwV0s
