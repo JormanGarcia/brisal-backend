@@ -49,11 +49,10 @@ router.post("/", verifyToken, async (req, res) => {
     return res.status(400).json(error);
   }
 
-  const userExist = await usersService.findByUsername(username);
+  const userExist = await usersService.findByUsername(value.username);
 
-  console.log(userExist)
 
-  if (userExist.length !== 0) {
+  if (userExist) {
     return res.status(500).send("Username is not available");
   }
 
