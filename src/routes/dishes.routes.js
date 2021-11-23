@@ -3,22 +3,21 @@ const router = express.Router();
 const Joi = require("joi");
 const verifyToken = require("../middlewares/auth.middleware");
 const dishesService = require("../service/dishes.service ");
-const multer = require("multer")
-const cloudinary = require("cloudinary")
-const path = require("path")
+const multer = require("multer");
+const cloudinary = require("cloudinary");
+const path = require("path");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null,path.join(__dirname,'../../Uploads'))
+    cb(null, path.join(__dirname, "../../Uploads"));
   },
-  filename: (req, file, cb)  => {
-    console.log(file)
-    cb(null, Date.now() + path.extname(file.originalname))
-  } 
-})
+  filename: (req, file, cb) => {
+    console.log(file);
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
 
-const upload = multer({storage})
-
+const upload = multer({ storage });
 
 router.get("/", async (req, res) => {
   try {
@@ -48,7 +47,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
   }
 });
 
-router.put("/:id", verifyToken, async (req, res) => {
+router.put("/:id", [verifyToken, upload.single("image")], async (req, res) => {
   const Schema = Joi.object({
     name: Joi.string(),
     description: Joi.string(),
@@ -63,14 +62,23 @@ router.put("/:id", verifyToken, async (req, res) => {
   }
 
   try {
-    await dishesService.updateDish(req.params.id, value);
+    if (req.file) {
+      const image = await cloudinary.v2.uploader.upload(req.file.path);
+      await dishesService.updateDish(req.params.id, {
+        ...value,
+        photos: [image.url],
+      });
+    } else {
+      await dishesService.updateDish(req.params.id, value);
+    }
+
     return res.send("Dish Updated");
   } catch (e) {
     return res.status(404).send(e);
   }
 });
 
-router.post("/", [verifyToken,upload.single("image")], async (req, res) => {
+router.post("/", [verifyToken, upload.single("image")], async (req, res) => {
   const Schema = Joi.object({
     name: Joi.string().required(),
     description: Joi.string().required(),
@@ -80,16 +88,14 @@ router.post("/", [verifyToken,upload.single("image")], async (req, res) => {
 
   const { error, value } = Schema.validate(req.body);
 
-
   if (error) {
     return res.status(400).json(error);
   }
 
   try {
+    const image = await cloudinary.v2.uploader.upload(req.file.path);
 
-    const image = await cloudinary.v2.uploader.upload(req.file.path)
-
-    await dishesService.createDish({...value, photos: [image.url]});
+    await dishesService.createDish({ ...value, photos: [image.url] });
     return res.send("Dish Created");
   } catch (e) {
     console.log(e);

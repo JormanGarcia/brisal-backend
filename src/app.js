@@ -18,6 +18,7 @@ app.use("/static", express.static("./Uploads"));
 app.use("/dishes", require("./routes/dishes.routes"));
 app.use("/users", require("./routes/users.routes"));
 app.use("/auth", require("./routes/auth.routes"));
+app.use("/categories", require("./routes/categories.routes"));
 
 // Listener
 app.listen(ENV.port, () => console.log("Listening on port: " + ENV.port));
